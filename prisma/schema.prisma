@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Task {
+  id         Int   @id @default(autoincrement())
+  title      String
+  description String
+  columnId    Int   @map("column_id")
+  column      TaskColumn   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now()) @db.Timestamptz() @map("created_at")
+  updated_at DateTime @updatedAt @db.Timestamp() @map("updated_at")
+
+  @@map("task")
+}
+
+model TaskColumn {
+  id         Int   @id @default(autoincrement())
+  name       String
+  color      String
+
+  tasks      Task[]
+  pageId    Int @map("page_id")
+  page      Page   @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  created_at DateTime @default(now()) @db.Timestamptz() @map("created_at")
+  updated_at  DateTime   @updatedAt @db.Timestamp() @map("updated_at")
+
+  @@map("task_column")
+}
+
+model Page {
+  id         Int   @id @default(autoincrement())
+  name       String
+  icon       String
+
+  taskColumns TaskColumn[]
+
+  created_at DateTime @default(now()) @db.Timestamptz() @map("created_at")
+  updated_at  DateTime   @updatedAt @db.Timestamp() @map("updated_at")
+
+  @@map("page")
+}
