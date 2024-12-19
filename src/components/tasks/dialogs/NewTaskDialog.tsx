@@ -11,12 +11,20 @@ import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { DialogFooter, DialogHeader } from '../../ui/dialog';
 import { Label } from '../../ui/label';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { newTaskSchema, NewTaskType, TaskSelect } from '../types';
 import { useState } from 'react';
 import { Trash } from 'lucide-react';
 import DeleteDialog from '@/components/utils/DeleteDialog';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface INewTaskDialogProps {
   refreshTaskColumns: () => void;
@@ -30,10 +38,11 @@ const NewTaskDialog = ({
   data = null,
 }: INewTaskDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { register, handleSubmit, reset } = useForm<NewTaskType>({
+  const { register, handleSubmit, reset, control } = useForm<NewTaskType>({
     defaultValues: {
       title: data?.title || '',
       description: data?.description || '',
+      columnId: data?.columnId || 1,
     },
     resolver: zodResolver(newTaskSchema),
   });
@@ -66,6 +75,31 @@ const NewTaskDialog = ({
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="columnId" className="text-right">
+                Colonne
+              </Label>
+              <div className="col-span-3">
+                <Controller
+                  name="columnId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="1">Todo</SelectItem>
+                          <SelectItem value="16">rrr</SelectItem>
+                          <SelectItem value="17">fff</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
+            </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="title" className="text-right">
                 Title

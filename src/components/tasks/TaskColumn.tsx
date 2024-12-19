@@ -14,6 +14,8 @@ import {
 import NewTaskDialog from './dialogs/NewTaskDialog';
 import DeleteDialog from '../utils/DeleteDialog';
 import NewColumnDialog from './dialogs/NewColumnDialog';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { useDroppable } from '@dnd-kit/core';
 
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
@@ -21,31 +23,44 @@ interface ITaskColumnProps {
 }
 
 const TaskColumn = ({ data, refreshTaskColumns }: ITaskColumnProps) => {
+  const { setNodeRef } = useDroppable({
+    id: 'col_' + data.id,
+  });
+
   return (
-    <div className="flex flex-col justify-start-start gap-4 w-[300px]">
+    <div ref={setNodeRef} className="flex flex-col justify-start-start gap-4 w-[300px]">
       <ColumnHeader
         data={data}
         nbTasks={data.tasks.length}
         refreshTaskColumns={refreshTaskColumns}
       />
-      {data.tasks.length > 0 ? (
-        <>
-          {data.tasks.map((task) => (
-            <TaskCard key={task.id} data={task} refreshTaskColumns={refreshTaskColumns} />
-          ))}
-        </>
-      ) : (
-        <NewTaskDialog refreshTaskColumns={refreshTaskColumns}>
-          <Button
-            variant="outline"
-            className="flex flex-col justify-center w-[300px] h-[150px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-sm"
-          >
-            Drag and drop tasks here
-            <br />
-            or click to add a new task
-          </Button>
-        </NewTaskDialog>
-      )}
+      <SortableContext
+        items={data.tasks.map((t) => t.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        {data.tasks.length > 0 ? (
+          <>
+            {data.tasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                data={task}
+                refreshTaskColumns={refreshTaskColumns}
+              />
+            ))}
+          </>
+        ) : (
+          <NewTaskDialog refreshTaskColumns={refreshTaskColumns}>
+            <Button
+              variant="outline"
+              className="flex flex-col justify-center w-[300px] h-[150px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-sm"
+            >
+              Drag and drop tasks here
+              <br />
+              or click to add a new task
+            </Button>
+          </NewTaskDialog>
+        )}
+      </SortableContext>
     </div>
   );
 };

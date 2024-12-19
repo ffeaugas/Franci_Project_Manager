@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const validatedData = newTaskSchema.parse(body);
 
     await prisma.task.create({
-      data: { ...validatedData, columnId: 1 },
+      data: validatedData,
     });
 
     return NextResponse.json({ status: 201 });
@@ -41,6 +41,7 @@ export async function PATCH(request: NextRequest) {
       data: {
         title: validatedData.title,
         description: validatedData.description,
+        columnId: validatedData.columnId,
       },
     });
 

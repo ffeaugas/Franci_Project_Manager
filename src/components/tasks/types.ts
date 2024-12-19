@@ -5,12 +5,14 @@ interface NewTaskForm {
   id?: number;
   title: string;
   description: string;
+  columnId: number;
 }
 
 export const newTaskSchema: ZodType<NewTaskForm> = z.object({
   id: z.number().optional(),
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
+  columnId: z.number(),
 });
 
 export type NewTaskType = z.infer<typeof newTaskSchema>;
