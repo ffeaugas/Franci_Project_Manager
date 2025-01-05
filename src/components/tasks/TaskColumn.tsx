@@ -20,9 +20,10 @@ import { useDroppable } from '@dnd-kit/core';
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
   refreshTaskColumns: () => void;
+  taskColumns: TaskColumnWithTasks[];
 }
 
-const TaskColumn = ({ data, refreshTaskColumns }: ITaskColumnProps) => {
+const TaskColumn = ({ data, refreshTaskColumns, taskColumns }: ITaskColumnProps) => {
   const { setNodeRef } = useDroppable({
     id: 'col_' + data.id,
   });
@@ -45,11 +46,15 @@ const TaskColumn = ({ data, refreshTaskColumns }: ITaskColumnProps) => {
                 key={task.id}
                 data={task}
                 refreshTaskColumns={refreshTaskColumns}
+                taskColumns={taskColumns}
               />
             ))}
           </>
         ) : (
-          <NewTaskDialog refreshTaskColumns={refreshTaskColumns}>
+          <NewTaskDialog
+            refreshTaskColumns={refreshTaskColumns}
+            taskColumns={taskColumns}
+          >
             <Button
               variant="outline"
               className="flex flex-col justify-center w-[300px] h-[150px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-sm"

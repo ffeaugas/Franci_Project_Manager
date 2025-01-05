@@ -96,11 +96,16 @@ const TaskBody = () => {
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <div className="flex flex-col h-full max-h-screen">
-        <TaskHeader refreshTaskColumns={fetchTaskColumns} />
+        <TaskHeader refreshTaskColumns={fetchTaskColumns} taskColumns={taskColumns} />
         <div className="flex-1 overflow-auto">
           <div className="flex flex-row gap-6 p-6 min-w-fit h-full">
             {taskColumns.map((col) => (
-              <TaskColumn key={col.id} data={col} refreshTaskColumns={fetchTaskColumns} />
+              <TaskColumn
+                key={col.id}
+                data={col}
+                refreshTaskColumns={fetchTaskColumns}
+                taskColumns={taskColumns}
+              />
             ))}
             <NewColumnDialog refreshTaskColumns={fetchTaskColumns}>
               <Button
@@ -115,7 +120,11 @@ const TaskBody = () => {
       </div>
       <DragOverlay>
         {activeTask ? (
-          <TaskCard data={activeTask} refreshTaskColumns={fetchTaskColumns} />
+          <TaskCard
+            data={activeTask}
+            refreshTaskColumns={fetchTaskColumns}
+            taskColumns={taskColumns}
+          />
         ) : null}
       </DragOverlay>
     </DndContext>
